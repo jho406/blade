@@ -8,13 +8,14 @@ module Blade::Server
   WEBSOCKET_PATH = "/blade/websocket"
 
   def start
-    Faye::WebSocket.load_adapter("thin")
-    Thin::Logging.silent = true
-    Thin::Server.start(host, Blade.config.port, app, signals: false)
+    Faye::WebSocket.load_adapter("puma")
+    server = Puma::Server.new(app)
+    server.add_tcp_listener(host, Blade.config.port)
+    server.run
   end
 
   def host
-    Thin::Server::DEFAULT_HOST
+    Puma::Const::LOCALHOST
   end
 
   def websocket_url(path = "")
