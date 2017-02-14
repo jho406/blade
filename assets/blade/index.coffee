@@ -27,7 +27,7 @@ getWebSocketURL = ->
 getSessionId = ->
   document.cookie.match(/blade_session=(\w+)/)?[1]
 
-client = new Faye.Client(getWebSocketURL())
+client = new Faye.Client(getWebSocketURL(), retry: 5)
 
 if session_id = getSessionId()
   client.subscribe "/assets", (data) ->
